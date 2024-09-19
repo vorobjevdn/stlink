@@ -95,7 +95,7 @@ endif()
 
 if (NOT LIBUSB_FOUND)
     message(STATUS "### DOWNLOADING AND BUILDING LIBUSB FROM LIBUSB-CMAKE REPO ###")
-    include(externalProject)
+    include(ExternalProject)
 
     set(LIBUSB_SRC     ${CMAKE_BINARY_DIR}/3rdParty/libusb-cmake/src)
     set(LIBUSB_BUILD   ${CMAKE_BINARY_DIR}/3rdParty/libusb-cmake/build)
