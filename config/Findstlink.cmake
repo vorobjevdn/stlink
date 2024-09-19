@@ -9,6 +9,7 @@
 #  STLINK_DEFINITIONS   compiler switches required for using stlink
 
 include(GNUInstallDirs)
+option(STLINK_USE_STATIC "Use Static STLINK Library instead of shared" OFF)
 
 # Retrieving the root directory and basic components.
 # This script lives in %ROOT%/cmake/modules/Findstlink.cmake
@@ -25,14 +26,23 @@ set(STLINK_INCLUDEDIR ${STLINK_HOME}/${CMAKE_INSTALL_INCLUDEDIR})
 find_package(libusb QUIET)
 
 # Creating the imported library
-add_library(stlink::stlink SHARED IMPORTED)
 
 # OS-Specific property-setting
 if(MSVC)
+    if (STLINK_USE_STATIC)
+        add_library(stlink::stlink STATIC IMPORTED)
+        target_compile_definitions(stlink::stlink PUBLIC STLINK_STATIC)
+        set(STLINK_IMPORTED_LOCATION ${STLINK_LIBDIR}/stlink-static.lib)
+        set(STLINK_IMPORTED_IMPLIB   ${STLINK_LIBDIR}/stlink-static.lib)
+    else()
+        add_library(stlink::stlink SHARED IMPORTED)
+        set(STLINK_IMPORTED_LOCATION ${STLINK_LIBDIR}/stlink.dll)
+        set(STLINK_IMPORTED_IMPLIB   ${STLINK_LIBDIR}/stlink-static.lib)
+    endif()
     set_target_properties(
             stlink::stlink PROPERTIES
-            IMPORTED_LOCATION                    ${STLINK_BINDIR}/stlink.dll
-            IMPORTED_IMPLIB                      ${STLINK_LIBDIR}/stlink-static.lib
+            IMPORTED_LOCATION                    ${STLINK_IMPORTED_LOCATION}
+            IMPORTED_IMPLIB                      ${STLINK_IMPORTED_IMPLIB}
     )
     install(FILES ${STLINK_BINDIR}/stlink.dll  DESTINATION ${CMAKE_INSTALL_BINDIR})
     install(FILES ${STLINK_LIBDIR}/stlink-static.lib  DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -51,9 +61,20 @@ if(MSVC)
         install(DIRECTORY ${STLINK_INCLUDEDIR}/libusb-1.0 DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
     endif()
 else()
+    if (STLINK_USE_STATIC)
+        add_library(stlink::stlink STATIC IMPORTED)
+        target_compile_definitions(stlink::stlink PUBLIC STLINK_STATIC)
+        set(STLINK_IMPORTED_LOCATION ${STLINK_LIBDIR}/libstlink.a)
+        set(STLINK_IMPORTED_IMPLIB   ${STLINK_LIBDIR}/libstlink.a)
+    else()
+        add_library(stlink::stlink SHARED IMPORTED)
+        set(STLINK_IMPORTED_LOCATION ${STLINK_LIBDIR}/libstlink.so)
+        set(STLINK_IMPORTED_IMPLIB   ${STLINK_LIBDIR}/libstlink.so)
+    endif()
     set_target_properties(
             stlink::stlink PROPERTIES
-            IMPORTED_LOCATION                    ${STLINK_LIBDIR}/libstlink.so
+            IMPORTED_LOCATION                    ${STLINK_IMPORTED_LOCATION}
+            IMPORTED_IMPLIB                      ${STLINK_IMPORTED_IMPLIB}
     )
     install(FILES ${STLINK_LIBDIR}/libstlink.so   DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(NOT LIBUSB_FOUND)
