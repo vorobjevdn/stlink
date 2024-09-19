@@ -271,6 +271,8 @@ endif()
 
 install(TARGETS ${STLINK_LIB_SHARED} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
+install(FILES ${PROJECT_SOURCE_DIR}/config/Findstlink.cmake
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/modules)
 
 ###
 # Static library
