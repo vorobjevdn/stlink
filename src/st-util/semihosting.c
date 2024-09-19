@@ -7,11 +7,11 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 #include "semihosting.h"
 
-#include <logging.h>
-#include <read_write.h>
+#include <stlink/logging.h>
+#include <stlink/read_write.h>
 
 static int32_t mem_read_u8(stlink_t *sl, uint32_t addr, uint8_t *data) {
     int32_t offset = addr % 4;

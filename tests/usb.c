@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 
-#include <read_write.h>
-#include <register.h>
-#include <usb.h>
+#include <stlink/read_write.h>
+#include <stlink/register.h>
+#include <stlink/usb.h>
 
 static void usage(void) {
     puts("test-usb --reset");

@@ -9,8 +9,8 @@
 
 #include <stdint.h>
 
-#include "libusb_settings.h"
-#include "logging.h"
+#include <stlink/libusb_settings.h>
+#include <stlink/logging.h>
 
 #define STLINK_USB_VID_ST                   0x0483
 #define STLINK_USB_PID_STLINK               0x3744

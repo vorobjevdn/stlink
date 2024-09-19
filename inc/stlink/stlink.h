@@ -11,8 +11,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include <stm32.h>
-#include <stm32flash.h>
+#include <stlink/stm32.h>
+#include <stlink/stm32flash.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -184,8 +184,8 @@ enum run_type {
 
 typedef struct _stlink stlink_t;
 
-#include <stm32.h>
-#include <backend.h>
+#include <stlink/stm32.h>
+#include <stlink/backend.h>
 
 struct _stlink {
     struct _stlink_backend *backend;
@@ -271,13 +271,13 @@ int32_t stlink_fread(stlink_t* sl, const char* path, bool is_ihex, stm32_addr_t 
 int32_t stlink_load_device_params(stlink_t *sl);
 int32_t stlink_target_connect(stlink_t *sl, enum connect_type connect);
 
-#include <chipid.h>
-#include <commands.h>
-#include <flash_loader.h>
-#include <sg.h>
-#include <usb.h>
-#include <version.h>
-#include <logging.h>
+#include <stlink/chipid.h>
+#include <stlink/commands.h>
+#include <stlink/flash_loader.h>
+#include <stlink/sg.h>
+#include <stlink/usb.h>
+#include <stlink/version.h>
+#include <stlink/logging.h>
 
 #ifdef __cplusplus
 }

@@ -17,6 +17,7 @@ foreach (test ${TESTEXEC})
 endforeach ()
 
 add_executable(test-flash flash.c "${CMAKE_SOURCE_DIR}/src/st-flash/flash_opts.c")
+target_include_directories(test-flash SYSTEM BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/src/st-flash)
 add_dependencies(test-flash ${TEST_DEPENDENCY})
 target_link_libraries(test-flash ${TEST_DEPENDENCY} ${SSP_LIB})
 add_test(test-flash ${CMAKE_BINARY_DIR}/bin/test-flash)

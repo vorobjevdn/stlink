@@ -26,20 +26,20 @@
 #include <arpa/inet.h>
 #endif
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 #include "gdb-server.h"
 #include "gdb-remote.h"
 #include "memory-map.h"
 #include "semihosting.h"
 
-#include <chipid.h>
-#include <common_flash.h>
-#include <flash_loader.h>
-#include <helper.h>
-#include <logging.h>
-#include <read_write.h>
-#include <register.h>
-#include <usb.h>
+#include <stlink/chipid.h>
+#include <stlink/common_flash.h>
+#include <stlink/flash_loader.h>
+#include <stlink/helper.h>
+#include <stlink/logging.h>
+#include <stlink/read_write.h>
+#include <stlink/register.h>
+#include <stlink/usb.h>
 
 #define FLASH_BASE 0x08000000
 

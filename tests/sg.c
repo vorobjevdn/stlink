@@ -5,11 +5,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 
-#include <logging.h>
-#include <read_write.h>
-#include <sg.h>
+#include <stlink/logging.h>
+#include <stlink/read_write.h>
+#include <stlink/sg.h>
 
 #if defined(_MSC_VER)
 #define __attribute__(x)

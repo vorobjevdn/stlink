@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 #include "info.h"
 
-#include <chipid.h>
-#include <helper.h>
-#include <usb.h>
+#include <stlink/chipid.h>
+#include <stlink/helper.h>
+#include <stlink/usb.h>
 
 static void usage(void) {
     puts("st-info --version");

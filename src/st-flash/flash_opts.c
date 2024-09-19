@@ -9,12 +9,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stm32.h>
-#include <stlink.h>
+#include <stlink/stm32.h>
+#include <stlink/stlink.h>
 #include "flash_opts.h"
 #include "flash.h"
 
-#include <helper.h>
+#include <stlink/helper.h>
 
 static bool starts_with(const char * str, const char * prefix) {
     uint32_t n = (uint32_t) strlen(prefix);

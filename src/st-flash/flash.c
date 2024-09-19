@@ -18,15 +18,15 @@
 #include <unistd.h>
 #endif // _WIN32
 
-#include <stm32.h>
-#include <stlink.h>
+#include <stlink/stm32.h>
+#include <stlink/stlink.h>
 #include "flash.h"
 #include "flash_opts.h"
 
-#include <chipid.h>
-#include <common_flash.h>
-#include <map_file.h>
-#include <option_bytes.h>
+#include <stlink/chipid.h>
+#include <stlink/common_flash.h>
+#include <stlink/map_file.h>
+#include <stlink/option_bytes.h>
 #include <usb.h>
 
 static stlink_t *connected_stlink = NULL;
