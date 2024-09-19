@@ -62,7 +62,7 @@ elseif (WIN32 OR (MINGW AND EXISTS "/etc/debian_version"))      # Windows OR cro
         # libusb library
         set(LIBUSB_NAME usb-1.0)
         find_library(LIBUSB_LIBRARY
-                NAMES ${LIBUSB_NAME}
+                NAMES ${LIBUSB_NAME} lib${LIBUSB_NAME}
                 HINTS "C:/Program Files/libusb-1.0" "C:/Program Files/usb-1.0" "C:/Program Files (x86)/libusb-1.0" "C:/Program Files (x86)/usb-1.0"
         )
 
@@ -120,10 +120,9 @@ if (NOT LIBUSB_FOUND)
             SOURCE_DIR             ${LIBUSB_SRC}
             BINARY_DIR             ${LIBUSB_BUILD}
             CMAKE_ARGS             -DLIBUSB_ENABLE_UDEV=OFF
-            -DCMAKE_BUILD_TYPE=Release
-            -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-            -DLIBUSB_BUILD_SHARED_LIBS=ON
-            --install-prefix "${LIBUSB_INSTALL}"
+                                   -DCMAKE_BUILD_TYPE=Release
+                                   -DLIBUSB_BUILD_SHARED_LIBS=ON
+                                   --install-prefix "${LIBUSB_INSTALL}"
             INSTALL_BYPRODUCTS     ${LIBUSB_FILES}
     )
 
@@ -131,19 +130,20 @@ if (NOT LIBUSB_FOUND)
     add_dependencies(libusb libusb_ext)
 
     set(LIBUSB_FOUND ON)
-    set(LIBUSB_INCLUDE_DIR ${LIBUSB_INSTALL}/include/libusb-1.0)
+    set(LIBUSB_INCLUDE_DIR ${LIBUSB_INSTALL}/include)
     set(LIBUSB_LIBRARY libusb)
+    mark_as_advanced(LIBUSB_INCLUDE_DIR LIBUSB_LIBRARY)
 
 
     if(MSVC)
         set_target_properties(
                 libusb PROPERTIES
-                IMPORTED_LOCATION ${LIBUSB_INSTALL}/bin/usb-1.0.dll
+                IMPORTED_LOCATION ${LIBUSB_INSTALL}/bin/libusb-1.0.dll
                 IMPORTED_IMPLIB ${LIBUSB_INSTALL}/lib/usb-1.0.lib
         )
 
         target_compile_definitions(libusb INTERFACE _SSIZE_T_DEFINED ssize_t=long)
-        set(LIBUSB_DEFINITIONS "_SSIZE_T_DEFINED" "ssize_t=long")
+        set(LIBUSB_DEFINITIONS "_SSIZE_T_DEFINED" "ssize_t=int64_t")
         install(DIRECTORY ${LIBUSB_INSTALL}/bin DESTINATION ${CMAKE_INSTALL_PREFIX})
     else()
         set_target_properties(
