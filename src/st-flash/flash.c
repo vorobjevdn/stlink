@@ -27,7 +27,7 @@
 #include <stlink/common_flash.h>
 #include <stlink/map_file.h>
 #include <stlink/option_bytes.h>
-#include <usb.h>
+#include <stlink/usb.h>
 
 static stlink_t *connected_stlink = NULL;
 

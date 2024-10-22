@@ -16,7 +16,7 @@
 #include <stlink/logging.h>
 #include <stlink/read_write.h>
 #include <stlink/register.h>
-#include <usb.h>
+#include <stlink/usb.h>
 
 #define DEFAULT_LOGGING_LEVEL 50
 #define DEBUG_LOGGING_LEVEL 100
