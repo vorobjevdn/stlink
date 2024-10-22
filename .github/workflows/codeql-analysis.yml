@@ -13,7 +13,7 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [testing, develop, master]
+    branches: [testing, develop, master, libusb_project]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [testing, develop]

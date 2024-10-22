@@ -11,8 +11,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include <stm32.h>
-#include <stm32flash.h>
+#include <stlink/stm32.h>
+#include <stlink/stm32flash.h>
+#include <stlink/api.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -184,8 +185,8 @@ enum run_type {
 
 typedef struct _stlink stlink_t;
 
-#include <stm32.h>
-#include <backend.h>
+#include <stlink/stm32.h>
+#include <stlink/backend.h>
 
 struct _stlink {
     struct _stlink_backend *backend;
@@ -240,44 +241,44 @@ struct _stlink {
 
 /* Functions defined in common.c */
 
-int32_t stlink_enter_swd_mode(stlink_t *sl);
-// int32_t stlink_enter_jtag_mode(stlink_t *sl);
-int32_t stlink_exit_debug_mode(stlink_t *sl);
-int32_t stlink_exit_dfu_mode(stlink_t *sl);
-void stlink_close(stlink_t *sl);
-int32_t stlink_core_id(stlink_t *sl);
-int32_t stlink_reset(stlink_t *sl, enum reset_type type);
-int32_t stlink_run(stlink_t *sl, enum run_type type);
-int32_t stlink_status(stlink_t *sl);
-int32_t stlink_version(stlink_t *sl);
-int32_t stlink_step(stlink_t *sl);
-int32_t stlink_current_mode(stlink_t *sl);
-int32_t stlink_force_debug(stlink_t *sl);
-int32_t stlink_target_voltage(stlink_t *sl);
-int32_t stlink_set_swdclk(stlink_t *sl, int32_t freq_khz);
-int32_t stlink_parse_ihex(const char* path, uint8_t erased_pattern, uint8_t* *mem, uint32_t* size, uint32_t* begin);
-uint8_t stlink_get_erased_pattern(stlink_t *sl);
-int32_t stlink_mwrite_sram(stlink_t *sl, uint8_t* data, uint32_t length, stm32_addr_t addr);
-int32_t stlink_fwrite_sram(stlink_t *sl, const char* path, stm32_addr_t addr);
-int32_t stlink_cpu_id(stlink_t *sl, cortex_m3_cpuid_t *cpuid);
-uint32_t stlink_calculate_pagesize(stlink_t *sl, uint32_t flashaddr);
-//void stlink_core_stat(stlink_t *sl);
-void stlink_print_data(stlink_t *sl);
+int32_t STLINK_API stlink_enter_swd_mode(stlink_t *sl);
+// int32_t STLINK_API stlink_enter_jtag_mode(stlink_t *sl);
+int32_t STLINK_API stlink_exit_debug_mode(stlink_t *sl);
+int32_t STLINK_API stlink_exit_dfu_mode(stlink_t *sl);
+void STLINK_API stlink_close(stlink_t *sl);
+int32_t STLINK_API stlink_core_id(stlink_t *sl);
+int32_t STLINK_API stlink_reset(stlink_t *sl, enum reset_type type);
+int32_t STLINK_API stlink_run(stlink_t *sl, enum run_type type);
+int32_t STLINK_API stlink_status(stlink_t *sl);
+int32_t STLINK_API stlink_version(stlink_t *sl);
+int32_t STLINK_API stlink_step(stlink_t *sl);
+int32_t STLINK_API stlink_current_mode(stlink_t *sl);
+int32_t STLINK_API stlink_force_debug(stlink_t *sl);
+int32_t STLINK_API stlink_target_voltage(stlink_t *sl);
+int32_t STLINK_API stlink_set_swdclk(stlink_t *sl, int32_t freq_khz);
+int32_t STLINK_API stlink_parse_ihex(const char* path, uint8_t erased_pattern, uint8_t* *mem, uint32_t* size, uint32_t* begin);
+uint8_t STLINK_API stlink_get_erased_pattern(stlink_t *sl);
+int32_t STLINK_API stlink_mwrite_sram(stlink_t *sl, uint8_t* data, uint32_t length, stm32_addr_t addr);
+int32_t STLINK_API stlink_fwrite_sram(stlink_t *sl, const char* path, stm32_addr_t addr);
+int32_t STLINK_API stlink_cpu_id(stlink_t *sl, cortex_m3_cpuid_t *cpuid);
+uint32_t STLINK_API stlink_calculate_pagesize(stlink_t *sl, uint32_t flashaddr);
+//void STLINK_API stlink_core_stat(stlink_t *sl);
+void STLINK_API stlink_print_data(stlink_t *sl);
 uint32_t is_bigendian(void);
-bool stlink_is_core_halted(stlink_t *sl);
-int32_t write_buffer_to_sram(stlink_t *sl, flash_loader_t* fl, const uint8_t* buf, uint16_t size);
-// int32_t write_loader_to_sram(stlink_t *sl, stm32_addr_t* addr, uint16_t* size);
-int32_t stlink_fread(stlink_t* sl, const char* path, bool is_ihex, stm32_addr_t addr, uint32_t size);
-int32_t stlink_load_device_params(stlink_t *sl);
-int32_t stlink_target_connect(stlink_t *sl, enum connect_type connect);
+bool STLINK_API stlink_is_core_halted(stlink_t *sl);
+int32_t STLINK_API write_buffer_to_sram(stlink_t *sl, flash_loader_t* fl, const uint8_t* buf, uint16_t size);
+// int32_t STLINK_API write_loader_to_sram(stlink_t *sl, stm32_addr_t* addr, uint16_t* size);
+int32_t STLINK_API stlink_fread(stlink_t* sl, const char* path, bool is_ihex, stm32_addr_t addr, uint32_t size);
+int32_t STLINK_API stlink_load_device_params(stlink_t *sl);
+int32_t STLINK_API stlink_target_connect(stlink_t *sl, enum connect_type connect);
 
-#include <chipid.h>
-#include <commands.h>
-#include <flash_loader.h>
-#include <sg.h>
-#include <usb.h>
-#include <version.h>
-#include <logging.h>
+#include <stlink/chipid.h>
+#include <stlink/commands.h>
+#include <stlink/flash_loader.h>
+#include <stlink/sg.h>
+#include <stlink/usb.h>
+#include <stlink/version.h>
+#include <stlink/logging.h>
 
 #ifdef __cplusplus
 }

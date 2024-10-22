@@ -9,7 +9,7 @@
 #define LOGGING_H
 
 #include <stdint.h>
-#include "spdlog_wrapper.h"
+#include <stlink/spdlog_wrapper.h>
 
 #ifdef  __cplusplus
 extern "C" {

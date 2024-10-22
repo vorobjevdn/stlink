@@ -9,8 +9,9 @@
 
 #include <stdint.h>
 
-#include "libusb_settings.h"
-#include "logging.h"
+#include <stlink/libusb_settings.h>
+#include <stlink/logging.h>
+#include <stlink/api.h>
 
 #define STLINK_USB_VID_ST                   0x0483
 #define STLINK_USB_PID_STLINK               0x3744
@@ -99,13 +100,20 @@ int32_t _stlink_usb_write_reg(stlink_t *sl, uint32_t reg, int32_t idx);
 int32_t _stlink_usb_enable_trace(stlink_t* sl, uint32_t frequency);
 int32_t _stlink_usb_disable_trace(stlink_t* sl);
 int32_t _stlink_usb_read_trace(stlink_t* sl, uint8_t* buf, uint32_t size);
-
 // static stlink_backend_t _stlink_usb_backend = { };
 
-uint32_t stlink_serial(struct libusb_device_handle *handle, struct libusb_device_descriptor *desc, char *serial);
-stlink_t *stlink_open_usb(enum ugly_loglevel verbose, enum connect_type connect, char serial[STLINK_SERIAL_BUFFER_SIZE], int32_t freq);
+#ifdef __cplusplus
+extern "C" {
+#endif //__cplusplus
+
+uint32_t STLINK_API stlink_serial(struct libusb_device_handle *handle, struct libusb_device_descriptor *desc, char *serial);
+stlink_t STLINK_API *stlink_open_usb(enum ugly_loglevel verbose, enum connect_type connect, char serial[STLINK_SERIAL_BUFFER_SIZE], int32_t freq);
 // static uint32_t stlink_probe_usb_devs(libusb_device **devs, stlink_t **sldevs[], enum connect_type connect, int32_t freq);
-uint32_t stlink_probe_usb(stlink_t **stdevs[], enum connect_type connect, int32_t freq);
-void stlink_probe_usb_free(stlink_t **stdevs[], uint32_t size);
+uint32_t STLINK_API stlink_probe_usb(stlink_t **stdevs[], enum connect_type connect, int32_t freq);
+void     STLINK_API stlink_probe_usb_free(stlink_t **stdevs[], uint32_t size);
+
+#ifdef __cplusplus
+}
+#endif //__cplusplus
 
 #endif // USB_H

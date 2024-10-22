@@ -144,88 +144,57 @@ endif()
 ###
 
 ## Define include directories to avoid absolute paths for header defines
-include_directories(${LIBUSB_INCLUDE_DIR})
-
-include_directories(${PROJECT_SOURCE_DIR}/inc) # contains top-level header files
-include_directories(${PROJECT_BINARY_DIR}/inc) # contains version.h
-
-include_directories(src)
-include_directories(src/st-flash)
-include_directories(src/st-info)
-include_directories(src/st-trace)
-include_directories(src/st-util)
-include_directories(src/stlink-lib)
 
 ## Set installation directory for header files
-if (WIN32)
-set(STLINK_INCLUDE_PATH ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Main include install directory")
-else ()
 set(STLINK_INCLUDE_PATH ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME} CACHE PATH "Main include install directory")
-endif()
 
 ## Subordinate CMakeLists for version config & header installation
 add_subdirectory(inc)
 
 ## Define source- and headerfiles for stlink library
-set(STLINK_HEADERS
-        inc/backend.h
-        inc/stlink.h
-        inc/stm32.h
-        inc/stm32flash.h
-        src/stlink-lib/calculate.h
-        src/stlink-lib/chipid.h
-        src/stlink-lib/commands.h
-        src/stlink-lib/common_flash.h
-        src/stlink-lib/flash_loader.h
-        src/stlink-lib/helper.h
-        src/stlink-lib/libusb_settings.h
-        src/stlink-lib/lib_md5.h
-        src/stlink-lib/logging.h
-        src/stlink-lib/map_file.h
-        src/stlink-lib/md5.h
-        src/stlink-lib/option_bytes.h
-        src/stlink-lib/register.h
-        src/stlink-lib/sg.h
-        src/stlink-lib/usb.h
-        )
+
+set(STLINK_INCLUDE_PATHS  ${PROJECT_SOURCE_DIR}/src/stlink-lib/include
+                          ${PROJECT_SOURCE_DIR}/inc
+                          ${CMAKE_BINARY_DIR}/inc/version/
+                          ${LIBUSB_INCLUDE_DIR}
+)
 
 set(STLINK_SOURCE
-        src/stlink-lib/calculate.c
-        src/stlink-lib/chipid.c
-        src/stlink-lib/common_flash.c
-        src/stlink-lib/common.c
-        src/stlink-lib/flash_loader.c
-        src/stlink-lib/helper.c
-        src/stlink-lib/logging.c
-        src/stlink-lib/map_file.c
-        src/stlink-lib/lib_md5.c
-        src/stlink-lib/md5.c
-        src/stlink-lib/option_bytes.c
-        src/stlink-lib/read_write.c
-        src/stlink-lib/sg.c
-        src/stlink-lib/usb.c
-        )
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/calculate.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/chipid.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/common_flash.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/common.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/flash_loader.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/helper.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/logging.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/map_file.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/lib_md5.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/md5.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/option_bytes.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/read_write.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/sg.c
+        ${PROJECT_SOURCE_DIR}/src/stlink-lib/src/usb.c
+)
 
 if (WIN32)
-    include_directories(src/win32)
-    set(STLINK_SOURCE "${STLINK_SOURCE};src/win32/win32_socket.c")
-    set(STLINK_HEADERS "${STLINK_HEADERS};src/win32/win32_socket.h")
+    list(APPEND STLINK_SOURCE "${PROJECT_SOURCE_DIR}/src/win32/win32_socket/win32_socket.c")
+    list(APPEND STLINK_INCLUDE_PATHS "${PROJECT_SOURCE_DIR}/src/win32/win32_socket")
 
     if (MSVC)
         # Add drop-in replacement for unistd.h to sources
-        include_directories(src/win32/unistd)
-        set(STLINK_HEADERS "${STLINK_HEADERS};src/win32/unistd/unistd.h")
+        include_directories(${PROJECT_SOURCE_DIR}/src/win32/unistd)
+        list(APPEND STLINK_INCLUDE_PATHS "${PROJECT_SOURCE_DIR}/src/win32/unistd")
     endif()
 
     if (NOT STLINK_HAVE_SYS_MMAN_H)
         include_directories(src/win32/mmap)
-        set(STLINK_SOURCE "${STLINK_SOURCE};src/win32/mmap.c")
-        set(STLINK_HEADERS "${STLINK_HEADERS};src/win32/mmap.h")
+        list(APPEND STLINK_SOURCE "${PROJECT_SOURCE_DIR}/src/win32/mmap/mmap.c")
+        list(APPEND STLINK_INCLUDE_PATHS "${PROJECT_SOURCE_DIR}/src/win32/mmap")
     endif()
 
     if (NOT STLINK_HAVE_SYS_TIME_H)
-        set(STLINK_SOURCE "${STLINK_SOURCE};src/win32/sys_time.c")
-        set(STLINK_HEADERS "${STLINK_HEADERS};src/win32/sys_time.h")
+        list(APPEND STLINK_SOURCE "${PROJECT_SOURCE_DIR}/src/win32/sys_time/sys_time.c")
+        list(APPEND STLINK_INCLUDE_PATHS "${PROJECT_SOURCE_DIR}/src/win32/sys_time")
     endif()
 endif()
 
@@ -250,7 +219,9 @@ execute_process(COMMAND bash -c "export LD_LIBRARY_PATH=${CMAKE_INSTALL_LIBDIR}"
 # Set library name
 set(STLINK_LIB_SHARED ${PROJECT_NAME}-shared)
 
-add_library(${STLINK_LIB_SHARED} SHARED ${STLINK_HEADERS} ${STLINK_SOURCE})
+add_library(${STLINK_LIB_SHARED} SHARED ${STLINK_SOURCE})
+target_include_directories(${STLINK_LIB_SHARED} SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+target_compile_definitions(${STLINK_LIB_SHARED} PRIVATE STLINK_EXPORT)
 
 set(STLINK_SHARED_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 message(STATUS "STLINK_LIB_SHARED: ${STLINK_LIB_SHARED}")
@@ -269,8 +240,20 @@ else ()
     target_link_libraries(${STLINK_LIB_SHARED} ${LIBUSB_LIBRARY} ${SSP_LIB})
 endif()
 
-install(TARGETS ${STLINK_LIB_SHARED} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(MSVC)
+    install(TARGETS ${STLINK_LIB_SHARED}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+else()
+    install(TARGETS ${STLINK_LIB_SHARED}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
 
+install(FILES ${PROJECT_SOURCE_DIR}/config/Findstlink.cmake
+        DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake/modules)
 
 ###
 # Static library
@@ -284,6 +267,9 @@ if (MSVC)
 endif()
 
 add_library(${STLINK_LIB_STATIC} STATIC ${STLINK_HEADERS} ${STLINK_SOURCE})
+target_include_directories(${STLINK_LIB_STATIC} SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+target_compile_definitions(${STLINK_LIB_STATIC} PRIVATE STLINK_EXPORT)
+target_compile_definitions(${STLINK_LIB_STATIC} PUBLIC STLINK_STATIC)
 
 set(STLINK_STATIC_VERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH})
 message(STATUS "STLINK_LIB_STATIC: ${STLINK_LIB_STATIC}")
@@ -302,8 +288,17 @@ else ()
     target_link_libraries(${STLINK_LIB_STATIC} ${LIBUSB_LIBRARY} ${SSP_LIB})
 endif()
 
-install(TARGETS ${STLINK_LIB_STATIC} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
+if(MSVC)
+    install(TARGETS ${STLINK_LIB_STATIC}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+else()
+    install(TARGETS ${STLINK_LIB_STATIC}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
 
 ###
 # Build toolset executables
@@ -322,9 +317,17 @@ if (MSVC)
 endif()
 
 add_executable(st-flash ${ST-FLASH_SOURCES})
+target_include_directories(st-flash SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+
 add_executable(st-info ${ST-INFO_SOURCES})
+target_include_directories(st-info SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+
 add_executable(st-util ${ST-UTIL_SOURCES})
+target_include_directories(st-util SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+
 add_executable(st-trace ${ST-TRACE_SOURCES})
+target_include_directories(st-trace SYSTEM AFTER PUBLIC ${STLINK_INCLUDE_PATHS})
+
 
 if (WIN32)
     target_link_libraries(st-flash ${STLINK_LIB_STATIC})

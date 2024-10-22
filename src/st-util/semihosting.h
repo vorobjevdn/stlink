@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 
 #define SEMIHOST_SYS_OPEN     0x01
 #define SEMIHOST_SYS_CLOSE    0x02

@@ -11,9 +11,9 @@
 
 #include <stdint.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 
-#include "libusb_settings.h"
+#include <stlink/libusb_settings.h>
 
 /* Device access */
 #define RDWR        0

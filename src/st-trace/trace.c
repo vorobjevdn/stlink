@@ -10,13 +10,13 @@
 #include <time.h>
 #include <unistd.h>
 
-#include <stlink.h>
+#include <stlink/stlink.h>
 
-#include <chipid.h>
-#include <logging.h>
-#include <read_write.h>
-#include <register.h>
-#include <usb.h>
+#include <stlink/chipid.h>
+#include <stlink/logging.h>
+#include <stlink/read_write.h>
+#include <stlink/register.h>
+#include <stlink/usb.h>
 
 #define DEFAULT_LOGGING_LEVEL 50
 #define DEBUG_LOGGING_LEVEL 100
